@@ -2,10 +2,9 @@ import { FieldAcceptanceRule } from '../store/field'
 
 const isFieldValid = <T>(value: T | undefined, accept: FieldAcceptanceRule<T>): boolean => {
   if (accept instanceof RegExp) {
-    const str: string = String(value)
-    const matches = accept.exec(str)
-    if (matches) {
-      return matches.length > 0
+    if (["string", "number"].includes(typeof  value)) {
+      const matches = accept.exec(String(value))
+      return !!matches && matches.length > 0
     }
     return false
   }
