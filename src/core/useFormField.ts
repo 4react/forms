@@ -39,10 +39,11 @@ const useFormField = <T>(
   const validateOnUpdate = useMemo(() => validationMoments.includes(FormFieldValidateOn.UPDATE), [])
 
   // context
-  const { dispatch } = useForm()
+  const { data, dispatch } = useForm()
+  const preloadedValue: T = useMemo(() => data[name]?.value, [])
 
   // states
-  const [value, setValue] = useState<T|undefined>(defaultValue)
+  const [value, setValue] = useState<T|undefined>(preloadedValue || defaultValue)
   const [valid, setValid] = useState<boolean>(true)
 
   useEffect(() => {

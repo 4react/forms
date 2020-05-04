@@ -31,10 +31,10 @@ const StoryValues = styled.input.attrs({
 const Story = () => {
 
   return (
-    <Form>
+    <Form initialValues={{ username: 'Mario' }}>
       <StoryForm>
         <FormField name="username" accept={/^\w+$/}>
-          {({ update, valid }) => <StoryField type="text" isValid={valid} onChange={e => update(e.target.value)}/>}
+          {({ value, update, valid }) => <StoryField type="text" value={value} isValid={valid} onChange={e => update(e.target.value)}/>}
         </FormField>
         <FormField name="age" accept={/^[1-9][0-9]*$/}>
           {({ update, valid }) => <StoryField type="text" isValid={valid} onChange={e => update(e.target.value)}/>}

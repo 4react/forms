@@ -29,7 +29,8 @@ const field = <T>(state: FieldState<T>, action: Action): FieldState<T> => {
           name: payload.name,
           ...(payload.accept && { accept: payload.accept })
         },
-        ...(!state.value && payload.defaultValue && { value: payload.defaultValue })
+        ...(payload.defaultValue && { value: payload.defaultValue }),
+        ...(state?.value && { value: state?.value })
       }
     case FormAction.UPDATE_FIELD:
       return {

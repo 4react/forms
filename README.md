@@ -83,7 +83,7 @@ This components accept a child function, and provides to it an object with the f
 | --- | --- | --- |
 | update | Function | Required to update the value of the field. |
 | valid | boolean | Points if last validation is passed or none is executed yet.
-| value | any | The stored value of the field (for any custom usage). |
+| value | any | The stored value of the field (for controlled inputs). |
 
 ### FormData
 Component that retrieves all values of the current form.
