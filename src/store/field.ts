@@ -12,7 +12,7 @@ export interface FieldProperties<T> {
   accept?: FieldAcceptanceRule<T>
 }
 
-export interface FieldData<T> {
+export interface FieldState<T> {
   properties: FieldProperties<T>
   value?: T
   valid?: boolean
@@ -20,7 +20,7 @@ export interface FieldData<T> {
 
 // reducer
 
-const field = <T>(state: FieldData<T>, action: Action): FieldData<T> => {
+const field = <T>(state: FieldState<T>, action: Action): FieldState<T> => {
   const { type, payload } = action
   switch (type) {
     case FormAction.ADD_FIELD:
@@ -29,7 +29,7 @@ const field = <T>(state: FieldData<T>, action: Action): FieldData<T> => {
           name: payload.name,
           ...(payload.accept && { accept: payload.accept })
         },
-        ...(payload.defaultValue && { value: payload.defaultValue })
+        ...(!state.value && payload.defaultValue && { value: payload.defaultValue })
       }
     case FormAction.UPDATE_FIELD:
       return {

@@ -2,6 +2,16 @@
 
 Ready-to-use form context and validation for React Applications.
 
+## Usage
+
+### Import dependency
+
+```
+npm i @4react/forms
+```
+
+### Compose fields
+
 ```jsx
 import { Form, FormField, FormData } from '@4react/forms'
 
@@ -20,19 +30,13 @@ const App = () => (
 )
 ```
 
-Live example
+[Live example](https://codesandbox.io/s/4reactformssample1-vlxbo?file=/src/App.js)
 
-## Usage
+## API
 
-### Import dependency
+### Form
+Component that provides a context for a form.
 
-```
-npm i @4react/forms
-```
-
-### Provide form context
-
-Use the `Form` component to provide the context.
 ```jsx
 import { Form } from '@4react/forms'
 
@@ -42,10 +46,13 @@ const App = () => (
   </Form>
 )
 ```
-This component brings no further structure on the layout.
 
-### Create fields
-Use the **`FormField`** component to register a new field to the current form context. 
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| initialValues | object | - | ***optional*** - Initial values for the form fields. |
+
+### FormField
+Component that registers a new field for the surrounding form.
 
 ```jsx
 import { FormField } from '@4react/forms'
@@ -53,45 +60,33 @@ import { FormField } from '@4react/forms'
 ...
 
 <FormField name="email">
-    ...
-</FormField>
-```
-
-This components accept a child function, and provides to it the following properties:
-
-| Name | Type | Description |
-| --- | --- | --- |
-| update | Function | Required to update the value of the field. Classic usage is on both onChange and onBlur input events. |
-| valid | boolean | Points if the field is considered valid, i.e. the last validation is passed or none is executed yet.
-| value | any | The stored value of the field. For any custom usage. |
-
-```
-<FormField name="email">
-  {field => <input type="text" onChange={e => field.update(e.target.name)} />}
-</FormField>
-
-<FormField name="email">
   {({ update, valid }) => (
     <input
       type="text"
-      onChange={e => update(e.target.name)}
+      onChange={e => update(e.target.value)}
       style={{ borderColor: valid ? 'gray' : 'red' }}
     />
   )}
 </FormField>
 ```
 
-`FormField` accepts this properties:
-
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| name | string | - | ***Required***. The name of the field |
-| defaultValue | any | - | Default value for the field. |
-| accept | Function, RegExp | - | If provided, this function is used to validate the value of the field. String (and compatible types) fields can use a RegExp also. |
-| validateOn | "init", "update" | "update" | Use to control in which moments the validation is executed. |
+| name | string | - | Name of the field |
+| defaultValue | any | - | ***optional*** - Default value of the field. |
+| accept | Function, RegExp | - | ***optional*** - If provided, this function is used to validate the value of the field. For string fields (and compatible types fields) a RegExp can be use also. |
+| validateOn | "init", "update" | "update" | ***optional*** - Use to control which moments are take into consideration for validation. A list of values is also accepted. |
 
-### Use collected data
-Use the **`FormData`** component to obtain all values of the current form.
+This components accept a child function, and provides to it an object with the following properties:
+
+| Name | Type | Description |
+| --- | --- | --- |
+| update | Function | Required to update the value of the field. |
+| valid | boolean | Points if last validation is passed or none is executed yet.
+| value | any | The stored value of the field (for any custom usage). |
+
+### FormData
+Component that retrieves all values of the current form.
 
 ```jsx
 import { FormData } from '@4react/forms'
@@ -99,9 +94,20 @@ import { FormData } from '@4react/forms'
 ...
     
 <FormData>
-  {({ values, valid }) => <button ... />}
+  {({ values, valid }) => (
+    <button
+      disabled={!valid}
+      onClick={() => sendData(values)}
+    >
+      SEND DATA
+    </button>
+  )}
 </FormData>
 ```
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| validate | boolean | true | ***optional*** - Used for performance issues, setting this property to false will disable automatic validation. Manual validation can be triggered by calling the `validate` method passed to children. |
 
 This components accept a child function, and provides to it the following properties:
 
@@ -111,80 +117,40 @@ This components accept a child function, and provides to it the following proper
 | valid | boolean | Points if the values in all the fields are considered valid. Returns false if no validation is done yet.
 | validate | Function | For performance reasons it's possible to force validation only on demand. In these cases invoking this function will validate the entire form. |
 
-##Hooks
+### Hooks
+Alternatively to the use of the above components, it's possible to create custom fields and data consumers, using the following hooks:
 
-The module also provides 2 hooks in alternative to the above components:
+#### useFormField
+This hook will register a new field with the specified name, and returns the same set of properties of the `FormField` component (see [FormField](#formfield)). 
 
-### useFormField
-As like the `FormField` component, this hook will register a new field in the current form, and provides the same properties.
-```
+```jsx
 import { useFormField } form '@4react/forms'
 
 const MyCustomField = ({ name }) => {
-  const { value, valid, update } = useFormField(name)
+  const { update, valid } = useFormField(name)
 
-  const onChange = e => {
-    const filteredValue = e.target.value.trim()
-    update(filteredValue)
-  }
-
-  return (
-    <>
-      <input
-        type="text"
-        onChange={onChange}
-        style={{ borderColor: valid ? 'gray' : 'red' }}
-      />
-      filtered: <span>{value}</span>
-    </>
-  )
+  return <input ... />
 }
 ```
 
-Accepted parameters:
-
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| name | string | - | ***Required***. The name of the field |
-| options | object | - | An object containing all the other optional props of the `FormField` component. |
-
-Provided parameters:
-
-| Name | Type | Description |
-| --- | --- | --- |
-| update | Function | Required to update the value of the field. Classic usage is on both onChange and onBlur input events. |
-| valid | boolean | Points if the field is considered valid, i.e. the last validation is passed or none is executed yet.
-| value | any | The stored value of the field. For any custom usage. |
+| name | string | - | Name of the field. |
+| options | object | {} | ***optional*** - Object accepting all optional props of the `FormField` component (see [FormField](#formfield)). |
 
 ### useFormData
-As like the `FormData` component, this hook will provide all values of the current form.
-```
-import { useFormData } form '@4react/forms'
+This hook retrieves collected values of the current form, and returns the same set of properties of the `FormData` component (see [FormData](#formdata)).
 
-const MyCustomSubmit = ({ name }) => {
+```jsx
+import { useFormData } from '@4react/forms'
+
+const MyCustomSubmit = () => {
   const { values, valid } = useFormData()
 
-  const submit = () => {
-    if(valid) {
-      sendData(values)
-    }
-  }
-
-  return <button onClick={submit} />
+  return <button ... />
 }
 ```
 
-Accepted parameters:
-
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| name | string | - | ***Required***. The name of the field |
-| options | object | - | An object containing all the other optional props of the `FormField` component. |
-
-Provided parameters:
-
-| Name | Type | Description |
-| --- | --- | --- |
-| values | object | Object containing all values of the form. |
-| valid | boolean | Points if the values in all the fields are considered valid. Returns false if no validation is done yet.
-| validate | Function | For performance reasons it's possible to force validation only on demand. In these cases invoking this function will validate the entire form. |
+| options | object | {} | ***optional*** - Object accepting all optional props of the `FormData` component (see [FormData](#formdata)). |

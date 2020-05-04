@@ -1,14 +1,29 @@
-import React, { FC } from 'react'
+import React, { FC, useMemo } from 'react'
 import { FormProvider } from '../core/context'
+import { FormValues } from '../core/useFormData'
+import { FormState } from '../store/form'
 
 export interface FormProps {
-  // empty
+  initialValues: FormValues
 }
 
 const Form: FC<FormProps> = props => {
-  const { children } = props
+  const {initialValues, children} = props
+
+  const initialData = useMemo<FormState>(() => {
+    return Object.keys(initialValues).reduce<FormState>((data: FormState, key: string) => {
+      data[key] = {
+        properties: {
+          name: key
+        },
+        value: initialValues[key]
+      }
+      return data
+    }, {})
+  }, [])
+
   return (
-    <FormProvider>
+    <FormProvider data={initialData}>
       {children}
     </FormProvider>
   )

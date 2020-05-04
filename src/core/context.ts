@@ -1,4 +1,4 @@
 import { createStore } from '@4react/store'
-import form, { FormData } from '../store/form'
+import form, { FormState } from '../store/form'
 
-export const [FormProvider, useForm] = createStore<FormData>(form)
+export const [FormProvider, useForm] = createStore<FormState>(form)

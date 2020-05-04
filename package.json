@@ -1,8 +1,11 @@
 {
   "name": "@4react/forms",
-  "version": "2020.1.1",
+  "version": "2020.1.2",
   "author": "Matteo Zanoncello",
   "license": "ISC",
+  "repository": {
+    "url": "https://github.com/4react/forms"
+  },
   "main": "lib/forms.js",
   "module": "lib/forms.module.js",
   "types": "lib/types",

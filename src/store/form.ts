@@ -1,10 +1,10 @@
-import field, { FieldAcceptanceRule, FieldData } from './field'
+import field, { FieldAcceptanceRule, FieldState } from './field'
 import { Action } from '@4react/store/lib/types/core/StoreContext'
 
 // interfaces
 
-export interface FormData {
-  [field: string]: FieldData<any>
+export interface FormState {
+  [field: string]: FieldState<any>
 }
 
 // actions
@@ -26,7 +26,7 @@ export const updateField = <T>(name: string, value: T, valid?: boolean) => ({
 
 // reducer
 
-const form = (state: FormData = {}, action: Action) => {
+const form = (state: FormState = {}, action: Action) => {
   const { type, payload } = action
   switch (type) {
     case FormAction.ADD_FIELD:
